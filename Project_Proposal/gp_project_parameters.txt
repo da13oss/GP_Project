@@ -1,0 +1,22 @@
+GitHub Repo or Organization: https://github.com/da13oss/Group_Ninjas_Project
+
+Stack: JavaScript/MERN
+
+Wireframe: Attached as MovieDB_Wireframe.pdf
+
+Project Name: MovieDB
+
+Project Description: MovieDB website will serve as a comprehensive platform where users can search for and view detailed information about movies. 
+This will include movie summaries, ratings, posters, and more, all fetched from the OMDb API. 
+This project will encapsulate our knowledge of front-end and back-end development, database management, API integration, and more.
+
+MVP (Minimum Viable Product) Features:
+- User Login, Registration
+- User friendly frontend with easy to navigate site
+- OMDb API integration, importing database details into the WebApp
+- User Favorite movies page
+- Modular Backend
+Bonus Features: 
+- User Profile editing
+- User registration, password validation
+- Movie Ratings, 
