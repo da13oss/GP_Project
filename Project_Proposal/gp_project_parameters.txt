@@ -1,5 +1,7 @@
 GitHub Repo or Organization: https://github.com/da13oss/Group_Ninjas_Project
 
+Members of team: Benjamin Pettis, Kacper Kuc, Mark McGovern 
+
 Stack: JavaScript/MERN
 
 Wireframe: Attached as MovieDB_Wireframe.pdf
@@ -19,4 +21,6 @@ MVP (Minimum Viable Product) Features:
 Bonus Features: 
 - User Profile editing
 - User registration, password validation
-- Movie Ratings, 
+- Movie Ratings
+- Users can leave ratings for movies, maybe they should also be able to leave a review as well (with full CRUD), and this makes it so a user can only review and rate the same movie once; they can change their ratings and reviews if they wish, but no duplicate reviews.
+ 
