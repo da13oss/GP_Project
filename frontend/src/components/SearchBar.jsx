@@ -1,9 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const SearchBar = ({ onSearch }) => {
-    const [query, setQuery] = useState('');
+/**
+ * SearchBar component for movie searches
+ * @param {Object} props - Component props
+ * @param {Function} props.onSearch - Search callback function
+ * @param {string} [props.initialQuery=''] - Initial search query
+ */
+const SearchBar = ({ onSearch, initialQuery = '' }) => {
+    const [query, setQuery] = useState(initialQuery);
 
+    // Update query when initialQuery changes
+    useEffect(() => {
+        setQuery(initialQuery);
+    }, [initialQuery]);
+
+    /**
+     * Handle form submission
+     * @param {Event} e - Form submit event
+     */
     const handleSubmit = (e) => {
         e.preventDefault();
         if (query.trim()) {
@@ -11,6 +26,10 @@ const SearchBar = ({ onSearch }) => {
         }
     };
 
+    /**
+     * Handle input change
+     * @param {Event} e - Input change event
+     */
     const handleChange = (e) => {
         setQuery(e.target.value);
     };
@@ -50,6 +69,7 @@ const SearchBar = ({ onSearch }) => {
 
 SearchBar.propTypes = {
     onSearch: PropTypes.func.isRequired,
+    initialQuery: PropTypes.string
 };
 
 export default SearchBar;

@@ -19,17 +19,18 @@ export const AuthProvider = ({ children }) => {
 
     const fetchUser = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/users/profile');
+            const { data } = await axios.get('/api/users/profile');
             setUser(data);
         } catch (error) {
             localStorage.removeItem('token');
+            delete axios.defaults.headers.common['Authorization'];
         } finally {
             setLoading(false);
         }
     };
 
     const login = async (credentials) => {
-        const { data } = await axios.post('http://localhost:5000/api/users/login', credentials);
+        const { data } = await axios.post('/api/users/login', credentials);
         localStorage.setItem('token', data.token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
         setUser(data.user);
@@ -37,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const register = async (userData) => {
-        const { data } = await axios.post('http://localhost:5000/api/users/register', userData);
+        const { data } = await axios.post('/api/users/register', userData);
         localStorage.setItem('token', data.token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
         setUser(data.user);
@@ -50,8 +51,61 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    // New methods for handling favorites
+    const addFavorite = async (movie) => {
+        try {
+            const { data } = await axios.post('/api/movies/favorites', {
+                imdbID: movie.imdbID,
+                title: movie.Title,
+                poster: movie.Poster,
+                year: movie.Year
+            });
+
+            // Update user state with new favorites
+            setUser(prev => ({
+                ...prev,
+                favorites: data
+            }));
+
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const removeFavorite = async (movieId) => {
+        try {
+            const { data } = await axios.delete(`/api/movies/favorites/${movieId}`);
+
+            // Update user state with new favorites
+            setUser(prev => ({
+                ...prev,
+                favorites: data
+            }));
+
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const isFavorite = (movieId) => {
+        return user?.favorites?.some(f => f.imdbID === movieId) || false;
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                login,
+                register,
+                logout,
+                loading,
+                addFavorite,
+                removeFavorite,
+                isFavorite
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

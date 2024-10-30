@@ -5,7 +5,7 @@ import User from '../models/User.js';
 
 const router = express.Router();
 
-// Create an axios instance for OMDB API
+// Create an axios instance for OMDB API with base configuration
 const omdbAPI = axios.create({
     baseURL: 'http://www.omdbapi.com'
 });
@@ -16,9 +16,14 @@ const addApiKey = (params = {}) => ({
     apikey: process.env.OMDB_API_KEY || '6df4a547'
 });
 
-// Fetch trending movies from OMDB API
+/**
+ * @route GET /api/movies/trending
+ * @description Fetch trending movies from OMDB API
+ * @access Public
+ */
 router.get('/trending', async (req, res) => {
     try {
+        // List of popular movie IDs
         const popularMovies = [
             'tt0111161', // The Shawshank Redemption
             'tt0068646', // The Godfather
@@ -27,6 +32,7 @@ router.get('/trending', async (req, res) => {
             'tt0050083', // 12 Angry Men
         ];
 
+        // Fetch all movies in parallel
         const movies = await Promise.all(
             popularMovies.map(async (id) => {
                 const response = await omdbAPI.get('/', {
@@ -43,7 +49,11 @@ router.get('/trending', async (req, res) => {
     }
 });
 
-// Search movies using OMDB API
+/**
+ * @route GET /api/movies/search
+ * @description Search movies using OMDB API
+ * @access Public
+ */
 router.get('/search', async (req, res) => {
     try {
         const { query } = req.query;
@@ -70,7 +80,11 @@ router.get('/search', async (req, res) => {
     }
 });
 
-// Get detailed movie information by ID
+/**
+ * @route GET /api/movies/detail/:id
+ * @description Get detailed movie information by ID
+ * @access Public
+ */
 router.get('/detail/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -93,19 +107,42 @@ router.get('/detail/:id', async (req, res) => {
     }
 });
 
-// Add movie to user's favorites
+/**
+ * @route POST /api/movies/favorites
+ * @description Add movie to user's favorites
+ * @access Private
+ */
 router.post('/favorites', auth, async (req, res) => {
     try {
+        // Validate required fields
         const { imdbID, title, poster, year } = req.body;
-        const user = await User.findById(req.userId);
 
-        if (user.favorites.some(f => f.imdbID === imdbID)) {
+        if (!imdbID || !title) {
+            return res.status(400).json({
+                message: 'Missing required fields: imdbID and title are required'
+            });
+        }
+
+        // Find user and check if movie is already in favorites
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isAlreadyFavorite = user.favorites.some(f => f.imdbID === imdbID);
+        if (isAlreadyFavorite) {
             return res.status(400).json({ message: 'Movie already in favorites' });
         }
 
-        user.favorites.push({ imdbID, title, poster, year });
-        await user.save();
+        // Add to favorites and save
+        user.favorites.push({
+            imdbID,
+            title,
+            poster: poster || 'N/A',
+            year: year || 'N/A'
+        });
 
+        await user.save();
         res.json(user.favorites);
     } catch (error) {
         console.error('Error adding to favorites:', error);
@@ -113,10 +150,18 @@ router.post('/favorites', auth, async (req, res) => {
     }
 });
 
-// Remove movie from user's favorites
+/**
+ * @route DELETE /api/movies/favorites/:id
+ * @description Remove movie from user's favorites
+ * @access Private
+ */
 router.delete('/favorites/:id', auth, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         user.favorites = user.favorites.filter(f => f.imdbID !== req.params.id);
         await user.save();
         res.json(user.favorites);
@@ -126,10 +171,17 @@ router.delete('/favorites/:id', auth, async (req, res) => {
     }
 });
 
-// Get user's favorites
+/**
+ * @route GET /api/movies/favorites
+ * @description Get user's favorites
+ * @access Private
+ */
 router.get('/favorites', auth, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
         res.json(user.favorites);
     } catch (error) {
         console.error('Error fetching favorites:', error);
