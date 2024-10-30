@@ -75,50 +75,6 @@ Our MovieDB website will serve as a comprehensive platform where users can searc
 5. **Access the application**:
     Open your browser and navigate to `http://localhost:3000`.
 
-## File Structure:
-```
-├── Project_Proposal
-│   ├── MovieDB_Wireframe.pdf
-│   └── gp_project_parameters.txt
-├── backend
-│   ├── middleware
-│   │   └── auth.js
-│   ├── models
-│   │   └── User.js
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── routes
-│   │   ├── movieRoutes.js
-│   │   └── userRoutes.js
-│   └── server.js
-└── frontend
-    ├── README.md
-    ├── eslint.config.js
-    ├── index.html
-    ├── package-lock.json
-    ├── package.json
-    ├── public
-    │   └── vite.svg
-    ├── src
-    │   ├── App.css
-    │   ├── App.jsx
-    │   ├── assets
-    │   │   └── react.svg
-    │   ├── components
-    │   │   └── Navbar.jsx
-    │   ├── context
-    │   │   └── AuthContext.jsx
-    │   ├── index.css
-    │   ├── main.jsx
-    │   └── pages
-    │       ├── Favorites.jsx
-    │       ├── Home.jsx
-    │       ├── Login.jsx
-    │       ├── MovieDetail.jsx
-    │       ├── Profile.jsx
-    │       └── Register.jsx
-    └── vite.config.js
-```
 
 ## Collaboration
 - **Version Control**: Use Git and GitHub for version control. Create branches for new features and open pull requests for code reviews.
